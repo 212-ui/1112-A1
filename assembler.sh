@@ -12,11 +12,33 @@ if [ $# -eq 0 ];then
     echo -e "usage: no arg is provided."
     exit 1
 elif [ $# -gt 1 ]; then
-    echo -e "usage: more than one arguments are provided"
+    echo -e "usage: more than one arguments are provided."
     exit 1
 fi
 
 INFILE="$1"
+# 提取纯文件名，剥离前面所有目录路径
+FILENAME="${INFILE##*/}"
+
+if [[ ! -f "$INFILE" ]]; then
+        echo "usage: input is not a file or it does not exist."
+        exit 1
+fi
+# 判断文件名后缀是不是 .vsc
+if [[ ${FILENAME%.vsc} != "$FILENAME" ]]; then
+    # 文件名后缀是 .vsc，继续检查文件是否存在
+    if [[ ! -s "$file" ]]; then
+    echo "usage: the file is empty - no .bin file is produced."
+    exit 1
+    fi
+
+else
+    # 文件名后缀不是 .vsc，TC04报错
+    echo "usage: input does not have the extension .vsc."
+    exit 1
+fi
+
+
 OUTFILE="${INFILE%.vsc}.bin"
 
 # opcode map
